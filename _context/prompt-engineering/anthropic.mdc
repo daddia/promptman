@@ -1,0 +1,425 @@
+---
+description: Comprehensive Anthropic Claude prompt engineering guide consolidating all key techniques, best practices, and optimization strategies for maximum performance across all Claude models.
+alwaysApply: false
+---
+# ANTHROPIC CLAUDE PROMPT ENGINEERING - COMPREHENSIVE GUIDE
+
+## FUNDAMENTAL PRINCIPLES
+
+### The Golden Rule
+
+**Show your prompt to a colleague with minimal context - if they're confused, Claude will be too.**
+
+### Core Success Factors
+
+1. **Clear success criteria definition** - Know exactly what good output looks like
+2. **Empirical testing approach** - Have ways to measure and validate performance
+3. **Iterative improvement process** - Start with first draft, then systematically enhance
+
+---
+
+## CORE TECHNIQUES (Ordered by Effectiveness)
+
+### 1. BE CLEAR, DIRECT, AND DETAILED
+
+**Core Principle:** Treat Claude as a brilliant but new employee who needs explicit context.
+
+**Implementation:**
+
+- **Give contextual information:**
+  - What the task results will be used for
+  - What audience the output is meant for
+  - What workflow this belongs in
+  - What successful completion looks like
+- **Be specific about desired actions:** If you want only code output, say so explicitly
+- **Provide sequential steps:** Use numbered lists or bullet points
+
+**Key Example Pattern:**
+
+```text
+Your task is to [SPECIFIC TASK] for [CONTEXT/AUDIENCE].
+
+Instructions:
+1. [Step 1 with specific criteria]
+2. [Step 2 with specific criteria]  
+3. [Step 3 with specific criteria]
+
+[SPECIFIC OUTPUT FORMAT REQUIREMENTS]
+```
+
+### 2. USE XML TAGS FOR STRUCTURE
+
+**Core Principle:** XML tags dramatically improve Claude's parsing accuracy for complex prompts.
+
+**Why Use XML:**
+
+- **Clarity:** Separate different prompt components cleanly
+- **Accuracy:** Reduce misinterpretation errors
+- **Flexibility:** Easy to modify without rewriting everything
+- **Parseability:** Enable easy extraction from Claude's output
+
+**Essential Tag Patterns:**
+
+```xml
+<instructions>
+[Main task instructions]
+</instructions>
+
+<example>
+[Single example with input/output]
+</example>
+
+<examples>
+<example>
+[Multiple examples]
+</example>
+</examples>
+
+<context>
+[Background information]
+</context>
+
+<formatting>
+[Output format requirements]  
+</formatting>
+
+<thinking>
+[Space for Claude's reasoning - use with CoT]
+</thinking>
+```
+
+**Power User Tip:** Combine XML tags with other techniques:
+
+- `<examples>` for multishot prompting
+- `<thinking>` + `<answer>` for chain of thought
+- `<documents>` + `<source>` for long context
+
+### 3. USE EXAMPLES (MULTISHOT PROMPTING)
+
+**Core Principle:** 3-5 diverse, relevant examples dramatically improve accuracy and consistency.
+
+**Crafting Effective Examples:**
+
+- **Relevant:** Mirror your actual use case exactly
+- **Diverse:** Cover edge cases and avoid unintended patterns
+- **Clear:** Wrap in `<example>` tags for structure
+
+**Power Pattern:**
+
+```xml
+<examples>
+<example>
+Input: [Example input that covers common case]
+Output: [Desired format and style]
+</example>
+
+<example>  
+Input: [Example input that covers edge case]
+Output: [Consistent format but different content]
+</example>
+
+<example>
+Input: [Example input that covers error case]  
+Output: [How to handle errors/exceptions]
+</example>
+</examples>
+
+Now process this input: {{USER_INPUT}}
+```
+
+### 4. LET CLAUDE THINK (CHAIN OF THOUGHT)
+
+**Core Principle:** Complex tasks benefit from explicit reasoning steps.
+
+**When to Use CoT:**
+
+- Math, logic, analysis, complex reasoning
+- Multi-step processes
+- Tasks requiring accuracy over speed
+- When you need to debug Claude's reasoning
+
+**Three Levels of CoT Implementation:**
+
+**Basic:** `Think step-by-step before answering.`
+
+**Guided:**
+
+```text
+Think through this systematically:
+1. First, analyze [specific aspect]
+2. Then, consider [specific aspect]  
+3. Finally, [specific action]
+```
+
+**Structured (Most Effective):**
+
+```xml
+<thinking>
+[Let Claude work through the reasoning process]
+</thinking>
+
+<answer>
+[Claude's final response]
+</answer>
+```
+
+**Critical Rule:** Always have Claude OUTPUT its thinking - internal thinking without output provides no benefit.
+
+### 5. GIVE CLAUDE A ROLE (SYSTEM PROMPTS)
+
+**Core Principle:** Role prompting in system parameter transforms Claude into a domain expert.
+
+**Implementation:**
+
+```python
+system="You are a seasoned data scientist at a Fortune 500 company with expertise in anomaly detection and statistical analysis."
+
+messages=[
+    {"role": "user", "content": "Analyze this dataset: <data>{{DATASET}}</data>"}
+]
+```
+
+**Role Enhancement Tips:**
+
+- **Be specific:** "CFO of high-growth B2B SaaS" vs just "financial expert"
+- **Add context:** Include industry, experience level, specific expertise
+- **Combine with examples:** Show the role in action
+
+### 6. PREFILL CLAUDE'S RESPONSE
+
+**Core Principle:** Guide output format and skip preambles by starting Claude's response.
+
+**Key Use Cases:**
+
+**JSON Output Control:**
+
+```python
+messages=[
+    {"role": "user", "content": "Extract data as JSON: <data>{{DATA}}</data>"},
+    {"role": "assistant", "content": "{"}  # Forces direct JSON output
+]
+```
+
+**Character Consistency:**
+
+```python
+messages=[
+    {"role": "user", "content": "What do you deduce about this evidence?"},
+    {"role": "assistant", "content": "[Sherlock Holmes]"}  # Maintains character
+]
+```
+
+**Warning:** Prefill content cannot end with trailing whitespace - will cause errors.
+
+---
+
+## ADVANCED TECHNIQUES
+
+### LONG CONTEXT OPTIMIZATION
+
+**For 20K+ Token Inputs:**
+
+1. **Put long data at the top** - Place documents before instructions/queries
+2. **Structure with XML:**
+
+```xml
+<documents>
+<document index="1">
+<source>filename.pdf</source>  
+<document_content>{{CONTENT}}</document_content>
+</document>
+</documents>
+
+[Your query/instructions here]
+```
+
+1. **Ground responses in quotes:**
+
+```text
+Find relevant quotes from the documents in <quotes> tags, then analyze based on those quotes in <analysis> tags.
+```
+
+### EXTENDED THINKING MODELS
+
+**Technical Considerations:**
+
+- Minimum thinking budget: 1024 tokens
+- Start small, increase incrementally
+- Best performance in English
+- Use batch processing for >32K thinking budgets
+
+**Optimized Prompting:**
+
+- **Use general instructions first:** "Think thoroughly and consider multiple approaches"
+- **Add step-by-step guidance only if needed**
+- **Combine with multishot:** Show thinking patterns in examples
+- **Request reflection:** "Verify your work and test your solution"
+
+### CLAUDE 4 SPECIFIC OPTIMIZATIONS
+
+**Enhanced Instruction Following:**
+
+- **Be explicit:** "Include as many relevant features as possible. Go beyond basics."
+- **Add context/motivation:** "This will be read by text-to-speech, so never use ellipses"
+- **Use positive directions:** "Write in flowing prose paragraphs" vs "Don't use markdown"
+
+**Parallel Tool Calling:**
+
+```text
+For maximum efficiency, whenever you need multiple independent operations, invoke all relevant tools simultaneously rather than sequentially.
+```
+
+**Quality Code Generation:**
+
+```text
+Write high-quality, general purpose solutions. Implement actual logic that works for all valid inputs, not just test cases. Focus on correct algorithms and best practices.
+```
+
+---
+
+## PROMPT TEMPLATES & VARIABLES
+
+**Structure for Reusable Prompts:**
+
+```xml
+<role>
+You are a {{ROLE_TYPE}} with expertise in {{DOMAIN}}.
+</role>
+
+<context>
+{{CONTEXT_INFORMATION}}
+</context>
+
+<instructions>
+{{TASK_INSTRUCTIONS}}
+</instructions>
+
+<example>
+Input: {{EXAMPLE_INPUT}}
+Output: {{EXAMPLE_OUTPUT}}
+</example>
+
+Process this input: {{USER_INPUT}}
+```
+
+**Benefits:**
+
+- **Consistency:** Same structure across interactions
+- **Efficiency:** Easy variable swapping
+- **Testability:** Quick edge case testing
+- **Scalability:** Manageable complexity growth
+
+---
+
+## OPTIMIZATION STRATEGIES
+
+### When to Use Each Technique
+
+**Always Start With:**
+
+1. Clear, direct instructions
+2. Relevant examples (3-5)
+3. XML structure for complex prompts
+
+**Add Based on Needs:**
+
+- **System role prompting:** For domain expertise
+- **Chain of thought:** For complex reasoning
+- **Prefilling:** For format control
+- **Extended thinking:** For very complex problems
+
+### Prompting vs Fine-tuning
+
+**Use Prompting When:**
+
+- Need fast iteration cycles
+- Working with external documents/context
+- Want transparency in model behavior
+- Need to maintain general knowledge
+- Have limited labeled training data
+
+### Performance Debugging
+
+1. **Test prompt clarity:** Have colleague follow instructions
+2. **Use structured thinking:** Add `<thinking>` tags to see reasoning
+3. **Check examples:** Ensure they align with desired behavior
+4. **Verify role specificity:** Make roles detailed and contextual
+5. **Optimize prompt order:** Instructions → Examples → Data → Query
+
+---
+
+## PRACTICAL IMPLEMENTATION PATTERNS
+
+### Pattern 1: Analysis Tasks
+
+```xml
+<role>You are a {{EXPERT_TYPE}} analyzing {{DOMAIN_CONTEXT}}</role>
+
+<data>{{INPUT_DATA}}</data>
+
+<instructions>
+1. Extract key insights using <insights> tags
+2. Identify patterns using <patterns> tags  
+3. Provide recommendations using <recommendations> tags
+</instructions>
+
+<example>
+[Relevant example showing desired analysis format]
+</example>
+```
+
+### Pattern 2: Content Generation
+
+```xml
+<context>
+Audience: {{TARGET_AUDIENCE}}
+Purpose: {{CONTENT_PURPOSE}}  
+Tone: {{DESIRED_TONE}}
+</context>
+
+<requirements>
+- {{REQUIREMENT_1}}
+- {{REQUIREMENT_2}}
+- {{REQUIREMENT_3}}
+</requirements>
+
+<examples>
+[2-3 examples showing style and format]
+</examples>
+
+Create content for: {{CONTENT_TOPIC}}
+```
+
+### Pattern 3: Complex Problem Solving
+
+```xml
+<thinking>
+Let me think through this systematically:
+1. Understanding the problem: [analysis]
+2. Considering approaches: [options]  
+3. Evaluating solutions: [comparison]
+4. Implementation strategy: [plan]
+</thinking>
+
+<solution>
+[Final structured solution]
+</solution>
+```
+
+---
+
+## QUALITY CHECKLIST
+
+Before deploying prompts, verify:
+
+✅ **Clarity:** Instructions are explicit and unambiguous
+✅ **Context:** Sufficient background for Claude to understand goals  
+✅ **Structure:** XML tags separate different prompt components
+✅ **Examples:** 3-5 diverse examples showing desired behavior
+✅ **Role:** Appropriate system-level role for domain expertise
+✅ **Format:** Output format clearly specified and enforced
+✅ **Testing:** Validated with edge cases and real-world inputs
+
+---
+
+*This guide consolidates best practices from all Anthropic documentation. Apply techniques incrementally based on your specific use case complexity and performance requirements.*

@@ -1,0 +1,492 @@
+---
+description: Comprehensive prompt engineering guide consolidating Anthropic Claude and OpenAI best practices, optimized for Model Context Protocol integration and agentic workflow systems.
+globs:
+  - "**/*.md"
+  - "**/*.py" 
+  - "**/*.ts"
+  - "**/*.js"
+alwaysApply: true
+---
+
+# PROMPT ENGINEERING BEST PRACTICES - MCP OPTIMIZED
+
+## CORE PRINCIPLES (RFC 2119 Compliance)
+
+### The Golden Rule
+**Show your prompt to a colleague with minimal context - if they're confused, the AI will be too.**
+
+### Fundamental Requirements
+1. **Clear success criteria definition** - Know exactly what good output looks like
+2. **Empirical testing approach** - Have ways to measure and validate performance  
+3. **Iterative improvement process** - Start with first draft, then systematically enhance
+4. **MCP compatibility** - Structure prompts for seamless protocol integration
+
+---
+
+## MCP INTEGRATION PATTERNS
+
+### Resource-Aware Prompting
+When working with MCP resources, structure prompts to leverage contextual data:
+
+```xml
+<role>
+You are a {{AGENT_TYPE}} with access to contextual resources via Model Context Protocol.
+</role>
+
+<mcp_context>
+Available resources:
+- {{RESOURCE_LIST}}
+- {{CAPABILITY_DESCRIPTION}}
+</mcp_context>
+
+<instructions>
+1. **MUST** query relevant MCP resources before responding
+2. **SHOULD** cite resource URIs in responses  
+3. **MAY** request additional resources if needed
+4. **MUST NOT** fabricate information not available in resources
+</instructions>
+
+<resource_query>
+{{SPECIFIC_RESOURCE_REQUESTS}}
+</resource_query>
+```
+
+### Tool-Integrated Workflows
+For MCP tool integration, establish clear tool usage policies:
+
+```xml
+<tools>
+Available MCP tools:
+- {{TOOL_NAME}}: {{TOOL_DESCRIPTION}}
+- {{TOOL_NAME}}: {{TOOL_DESCRIPTION}}
+</tools>
+
+<tool_policy>
+- **MUST** use tools instead of guessing when facts/data are uncertain
+- **SHOULD** call tools in parallel when operations are independent  
+- **MUST** set parallel_tool_calls=false when steps depend on prior outputs
+- **MUST** handle tool failures gracefully with fallback strategies
+</tool_policy>
+
+<error_handling>
+If tool calls fail:
+1. Report the specific failure
+2. Suggest alternative approaches
+3. Request user guidance for next steps
+</error_handling>
+```
+
+### Sampling-Enabled Prompts
+For MCP sampling capabilities, structure prompts to support recursive AI interactions:
+
+```xml
+<sampling_context>
+This prompt supports MCP sampling for:
+- {{SAMPLING_USE_CASE_1}}
+- {{SAMPLING_USE_CASE_2}}
+</sampling_context>
+
+<sampling_policy>
+- **MUST** obtain explicit user consent before sampling
+- **SHOULD** explain what will be sampled and why
+- **MAY** suggest sampling strategies for complex tasks
+- **MUST NOT** sample without clear user understanding
+</sampling_policy>
+```
+
+---
+
+## STRUCTURED PROMPT ARCHITECTURE (XML-Based)
+
+### Core Template Structure
+**MUST** use XML tags for clear component separation and MCP compatibility:
+
+```xml
+<role>
+You are a {{ROLE_TYPE}} responsible for {{PRIMARY_FUNCTION}}.
+You excel at {{KEY_CAPABILITIES}} and understand {{DOMAIN_CONTEXT}}.
+</role>
+
+<objective>
+{{CLEAR_TASK_STATEMENT}} specified in <inputs>, following {{STANDARDS_REFERENCE}}.
+</objective>
+
+<policies>
+- **MUST** follow the <output_contract> exactly
+- **MUST** {{CRITICAL_REQUIREMENT_1}}
+- **SHOULD** {{RECOMMENDED_BEHAVIOR_1}} 
+- **MAY** {{OPTIONAL_BEHAVIOR_1}}
+- **MUST NOT** {{PROHIBITED_BEHAVIOR_1}}
+</policies>
+
+<quality_gates>
+- {{MEASURABLE_CRITERION_1}}
+- {{MEASURABLE_CRITERION_2}}
+- {{MEASURABLE_CRITERION_3}}
+</quality_gates>
+
+<workflow>
+1) **{{STEP_1_NAME}}**: {{STEP_1_DESCRIPTION}}
+2) **{{STEP_2_NAME}}**: {{STEP_2_DESCRIPTION}}
+3) **{{STEP_3_NAME}}**: {{STEP_3_DESCRIPTION}}
+</workflow>
+
+<tool_use>
+- {{TOOL_USAGE_GUIDANCE}}
+- **Parallel calls** {{PARALLEL_GUIDANCE}}
+- {{SPECIFIC_TOOL_INSTRUCTIONS}}
+</tool_use>
+
+<output_contract>
+Return exactly one {{OUTPUT_TYPE}}. Schema:
+
+{{JSON_SCHEMA_OR_STRUCTURE}}
+
+**MUST** adhere to this schema exactly. **MUST NOT** include {{EXCLUDED_CONTENT}}.
+</output_contract>
+
+<acceptance_criteria>
+- {{SPECIFIC_SUCCESS_METRIC_1}}
+- {{SPECIFIC_SUCCESS_METRIC_2}}
+- {{SPECIFIC_SUCCESS_METRIC_3}}
+</acceptance_criteria>
+
+<anti_patterns>
+- {{COMMON_MISTAKE_1}}
+- {{COMMON_MISTAKE_2}}
+- {{COMMON_MISTAKE_3}}
+</anti_patterns>
+
+<!-- Place variable inputs last for prompt caching benefits -->
+<inputs>
+{{STRUCTURED_INPUT_VARIABLES}}
+</inputs>
+```
+
+---
+
+## REQUIREMENT SPECIFICATION (RFC 2119)
+
+### Requirement Levels
+**MUST** use RFC 2119 keywords in **BOLD UPPERCASE** to signal priority:
+
+- **MUST** / **REQUIRED** / **SHALL**: Absolute requirements
+- **MUST NOT** / **SHALL NOT**: Absolute prohibitions  
+- **SHOULD** / **RECOMMENDED**: Strong recommendations
+- **SHOULD NOT** / **NOT RECOMMENDED**: Strong discouragements
+- **MAY** / **OPTIONAL**: Truly optional behaviors
+
+### Policy Structure Example
+```xml
+<policies>
+- **MUST** validate all inputs against schema before processing
+- **MUST NOT** expose sensitive data in logs or responses
+- **SHOULD** use parallel tool calls for independent operations
+- **SHOULD NOT** make assumptions about missing data
+- **MAY** suggest alternative approaches when primary fails
+</policies>
+```
+
+---
+
+## ADVANCED TECHNIQUES
+
+### Chain of Thought with Structured Thinking
+For complex reasoning tasks, use structured thinking patterns:
+
+```xml
+<thinking>
+Let me work through this systematically:
+
+1. **Problem Analysis**: {{PROBLEM_BREAKDOWN}}
+2. **Context Assessment**: {{RELEVANT_CONTEXT}}
+3. **Approach Evaluation**: {{SOLUTION_OPTIONS}}
+4. **Implementation Planning**: {{EXECUTION_STRATEGY}}
+5. **Risk Mitigation**: {{POTENTIAL_ISSUES}}
+</thinking>
+
+<solution>
+{{FINAL_STRUCTURED_RESPONSE}}
+</solution>
+```
+
+### Multi-Shot Example Patterns
+Provide 3-5 diverse examples covering edge cases:
+
+```xml
+<examples>
+<example>
+<scenario>{{COMMON_CASE_DESCRIPTION}}</scenario>
+<input>{{EXAMPLE_INPUT_1}}</input>
+<output>{{DESIRED_OUTPUT_1}}</output>
+</example>
+
+<example>
+<scenario>{{EDGE_CASE_DESCRIPTION}}</scenario>
+<input>{{EXAMPLE_INPUT_2}}</input>
+<output>{{DESIRED_OUTPUT_2}}</output>
+</example>
+
+<example>
+<scenario>{{ERROR_CASE_DESCRIPTION}}</scenario>
+<input>{{EXAMPLE_INPUT_3}}</input>
+<output>{{ERROR_HANDLING_OUTPUT}}</output>
+</example>
+</examples>
+```
+
+### Response Prefilling for Format Control
+Guide output format by starting the AI's response:
+
+```python
+# For JSON output control
+messages = [
+    {"role": "user", "content": "Extract data as JSON: <data>{{DATA}}</data>"},
+    {"role": "assistant", "content": "{"}  # Forces direct JSON
+]
+
+# For structured analysis
+messages = [
+    {"role": "user", "content": "Analyze this system architecture..."},
+    {"role": "assistant", "content": "## Architecture Analysis\n\n### Overview\n"}
+]
+```
+
+---
+
+## MCP-SPECIFIC OPTIMIZATIONS
+
+### Resource Integration Patterns
+```xml
+<mcp_resources>
+<resource uri="{{RESOURCE_URI}}" type="{{RESOURCE_TYPE}}">
+{{RESOURCE_DESCRIPTION}}
+</resource>
+</mcp_resources>
+
+<resource_usage>
+- **MUST** query resources before making claims
+- **SHOULD** cite specific resource sections  
+- **MAY** request additional resources if gaps identified
+- **MUST NOT** contradict authoritative resource data
+</resource_usage>
+```
+
+### Tool Orchestration
+```xml
+<tool_orchestration>
+Available tools: {{TOOL_LIST}}
+
+Execution strategy:
+1. **Parallel execution** for independent operations
+2. **Sequential execution** for dependent operations  
+3. **Error recovery** with graceful degradation
+4. **Result aggregation** with conflict resolution
+</tool_orchestration>
+```
+
+### Sampling Coordination
+```xml
+<sampling_strategy>
+For complex multi-step tasks:
+1. **Initial analysis** with current context
+2. **Sampling request** for specialized subtasks
+3. **Result integration** with validation
+4. **Final synthesis** with quality checks
+</sampling_strategy>
+```
+
+---
+
+## PERFORMANCE OPTIMIZATION
+
+### Prompt Caching Strategy
+Structure prompts for optimal caching:
+
+```xml
+<!-- Static content first (cached) -->
+<role>{{STATIC_ROLE_DEFINITION}}</role>
+<policies>{{STATIC_POLICIES}}</policies>
+<workflow>{{STATIC_WORKFLOW}}</workflow>
+<examples>{{STATIC_EXAMPLES}}</examples>
+
+<!-- Variable content last (not cached) -->
+<inputs>
+{{DYNAMIC_USER_INPUT}}
+{{DYNAMIC_CONTEXT}}
+{{DYNAMIC_PARAMETERS}}
+</inputs>
+```
+
+### Long Context Handling
+For 20K+ token inputs:
+
+```xml
+<documents>
+<document index="1">
+<source>{{SOURCE_IDENTIFIER}}</source>
+<metadata>{{DOCUMENT_METADATA}}</metadata>
+<content>{{DOCUMENT_CONTENT}}</content>
+</document>
+</documents>
+
+<query>
+Based on the documents above, {{SPECIFIC_QUERY}}
+
+Requirements:
+- Quote relevant passages in <quotes> tags
+- Provide analysis in <analysis> tags  
+- Include source references for all claims
+</query>
+```
+
+### Parallel Processing Guidance
+```xml
+<parallel_processing>
+**RECOMMENDED** for independent operations:
+- Multiple API calls to different services
+- Parallel data processing tasks
+- Independent validation checks
+
+**MUST** disable for dependent operations:
+- Sequential workflow steps
+- Operations requiring prior results
+- State-dependent modifications
+</parallel_processing>
+```
+
+---
+
+## QUALITY ASSURANCE
+
+### Validation Checklist
+Before deploying prompts, verify:
+
+✅ **MCP Compatibility**: Works with protocol requirements  
+✅ **Role Clarity**: Agent purpose and capabilities clear
+✅ **Objective Definition**: Task goals explicitly stated  
+✅ **Policy Specification**: RFC 2119 requirements included
+✅ **Quality Gates**: Measurable success criteria defined
+✅ **Workflow Structure**: Logical step progression
+✅ **Tool Integration**: Proper tool usage patterns
+✅ **Output Contract**: Exact schema specification
+✅ **Error Handling**: Graceful failure modes
+✅ **Example Coverage**: Edge cases and errors included
+
+### Testing Framework
+```xml
+<testing_approach>
+1. **Unit Testing**: Individual prompt components
+2. **Integration Testing**: MCP protocol compatibility  
+3. **Edge Case Testing**: Boundary conditions and errors
+4. **Performance Testing**: Response time and quality
+5. **Regression Testing**: Consistent behavior over time
+</testing_approach>
+```
+
+---
+
+## ANTI-PATTERNS TO AVOID
+
+### Common Mistakes
+- **Vague objectives** without measurable success criteria
+- **Missing error handling** for tool failures or missing data
+- **Overlong prompts** without clear structure or caching optimization
+- **Inconsistent examples** that contradict desired behavior
+- **Weak requirement language** using "try to" instead of MUST/SHOULD/MAY
+- **Poor MCP integration** not leveraging protocol capabilities
+- **Unbounded outputs** without clear format specifications
+- **Context bleeding** where instructions mix with variable inputs
+
+### MCP-Specific Anti-Patterns
+- **Resource assumptions** without verification through MCP queries
+- **Tool misuse** calling tools when information is already available
+- **Sampling overuse** for tasks that don't require recursive AI interaction
+- **Protocol violations** not following MCP security and consent requirements
+
+---
+
+## IMPLEMENTATION TEMPLATES
+
+### Basic Agent Template
+```xml
+<role>
+You are a {{AGENT_TYPE}} Agent responsible for {{PRIMARY_FUNCTION}}.
+You excel at {{KEY_CAPABILITIES}} and understand {{DOMAIN_EXPERTISE}}.
+</role>
+
+<objective>
+{{TASK_DESCRIPTION}} specified in <inputs>, {{QUALITY_STANDARD}}.
+</objective>
+
+<policies>
+- **MUST** follow the <output_contract> exactly
+- **MUST** {{CRITICAL_REQUIREMENT}}
+- **SHOULD** {{RECOMMENDED_BEHAVIOR}}
+- **MUST NOT** {{PROHIBITED_BEHAVIOR}}
+</policies>
+
+<workflow>
+1) **{{STEP_1}}**: {{DESCRIPTION_1}}
+2) **{{STEP_2}}**: {{DESCRIPTION_2}}
+3) **{{STEP_3}}**: {{DESCRIPTION_3}}
+</workflow>
+
+<output_contract>
+Return exactly one JSON object:
+{{JSON_SCHEMA}}
+</output_contract>
+
+<inputs>
+{{VARIABLE_INPUTS}}
+</inputs>
+```
+
+### MCP Integration Template
+```xml
+<mcp_integration>
+<resources>
+Available: {{RESOURCE_LIST}}
+</resources>
+
+<tools>
+Available: {{TOOL_LIST}}
+</tools>
+
+<capabilities>
+- Resource querying: {{RESOURCE_CAPABILITIES}}
+- Tool execution: {{TOOL_CAPABILITIES}}  
+- Sampling support: {{SAMPLING_CAPABILITIES}}
+</capabilities>
+</mcp_integration>
+
+<integration_policy>
+- **MUST** leverage MCP resources before generating responses
+- **SHOULD** use appropriate tools for data operations
+- **MAY** request sampling for complex reasoning tasks
+- **MUST NOT** bypass MCP security and consent requirements
+</integration_policy>
+```
+
+---
+
+## CONTINUOUS IMPROVEMENT
+
+### Evaluation Metrics
+1. **Task Completion Rate**: Percentage of successful task completions
+2. **Output Quality Score**: Rubric-based quality assessment  
+3. **MCP Protocol Compliance**: Adherence to protocol requirements
+4. **Response Consistency**: Reproducible outputs for similar inputs
+5. **Error Handling Effectiveness**: Graceful failure recovery
+6. **Performance Efficiency**: Response time and resource usage
+
+### Iteration Process
+1. **Baseline Establishment**: Initial prompt performance measurement
+2. **Systematic Enhancement**: One technique at a time improvement
+3. **A/B Testing**: Comparative evaluation of prompt variants
+4. **Regression Prevention**: Automated testing of prompt changes
+5. **Feedback Integration**: User and system feedback incorporation
+
+---
+
+*This guide consolidates best practices from Anthropic, OpenAI, and Model Context Protocol specifications. Apply techniques incrementally based on your specific use case complexity and MCP integration requirements.*

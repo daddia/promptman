@@ -1,0 +1,50 @@
+default: true
+
+# Headings
+MD003:
+  style: atx            # ATX only
+MD025:
+  level: 1              # Exactly one H1
+MD041:
+  front_matter: true    # H1 after front matter is OK
+MD026:
+  punctuation: ".,;:!?" # No trailing punctuation in headings
+
+# Paragraphs & lines
+MD013:
+  line_length: 100
+  code_blocks: false
+  tables: false
+  strict: false
+MD012:
+  maximum: 1            # No multiple blank lines
+
+# Lists & spacing
+MD029:
+  style: one            # 1. 1. 1.
+MD030:
+  ul_single: 1
+  ol_single: 1
+  ul_multi: 1
+  ol_multi: 1
+MD032: true             # Blank line around lists
+
+# Code blocks
+MD046:
+  style: fenced
+MD040: true             # Fenced code blocks should have a language
+MD031: true             # Blank line around fenced code blocks
+
+# Links & HTML
+MD034: true             # No bare URLs
+MD033:             
+  allowed_elements:
+    - instruction
+    - policy
+    - qna
+    - facts
+    - rule
+    - ruleset
+
+# Files
+MD047: true             # Single trailing newline
