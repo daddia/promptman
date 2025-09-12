@@ -1,7 +1,4 @@
-# Developer Tools
-.backup
-_helix
-_temple
-
-# External
-vendor
+# .cursorignore Template
+# Controls which directories and files Cursor can access
+# Cursor automatically ignores files in `.gitignore` and the default ignore list
+# For more info about Cursor Ignore Files, see https://docs.cursor.com/en/context/ignore-files
